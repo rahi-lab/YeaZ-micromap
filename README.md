@@ -1,4 +1,4 @@
-<h1>Domain adaptation for segmentation of microscopy images using YeaZ-micromap
+<h1>Domain adaptation for segmentation of microscopy images using YeaZ-micromap</h1>
 
 This repository contains the code to train and evaluate the performance of YeaZ-micromap (YeaZ-microscopy image mapper).
 YeaZ-micromap adapts the look of images from the target set so that they can be segmented using a neural-network trained for segmentation of images from the source set.
