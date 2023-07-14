@@ -1,7 +1,8 @@
 <h1>Domain adaptation for segmentation of microscopy images using CycleGAN and YeaZ.</h1>
 
-This repository combines the style transfer capabilities of *CycleGAN* and segmentation capabilities of *YeaZ*,
-to boost the segmentation performance on out-of-domain microscopy data.
+This repository contains the code to train and evaluate the performance of YeaZ-micromap (YeaZ-microscopy image mapper).
+YeaZ-micromap adapts the look of images from the target set so that they can be segmented using a neural-network trained for segmentation of images from the source set.
+The tool consists of two modules: the style transfer module, which maps the look of images; and the YeaZ module, which segments the style-transferred images. As the style-transfer module, we used a generative adversarial network called CycleGAN.
 
 Paper: *Pan-microscope image segmentation based on a single training set*
 
@@ -11,7 +12,7 @@ Paper: *Pan-microscope image segmentation based on a single training set*
 *  evaluates metrics on the segmented images and GT masks (from opt.dataroot).
 
 *train_cyclegan.py* script performs:
-* training of CycleGAN on GT images in opt.dataroot with different lambdas (cycle loss weights)
+* training of microscopy mapping on GT images in opt.dataroot with different lambdas (cycle loss weights)
 
 **Ground truth data folder structure:**
 ```
@@ -42,7 +43,7 @@ Depending on usage, some of the folders can be empty:
 <h1>Usage</h1>
 
 <h2>Evaluate pretrained CycleGAN and YeaZ</h2>
-Script arguments follow the established nomenclature from two combined projects (CUT and YeaZ)
+For evaluating the segmentation accuracy, the user provides the directory with checkpoint weights from the CycleGAN training ("checkpoints_dir"), the DNN weights used for training of the source dataset ("path_to_yeaz_weights"), among other thigs. The rest of the arguments refer to either other trained CycleGAN specifications ("dataroot", "name", "model", "preprocess") or to YeaZ segmentation ("threshold", "min_seed_dist", "min_epoch", "max_epoch", "epoch_step"). The dtaroot folder contains the mask of the small anotated patch of the test image for only one of the domains (corresponding to the target set). If specified, a subpart (patch) of the big mask, instead of the whole mask, can be used for training evaluation. In that case "metrics_patch_borders" should be supplied as an additional parameter. The resulting segmentation masks will be saved in "results_dir" and the metrics of segmentation in "metrics_path".
 
 ```
 $ python evaluate.py \
