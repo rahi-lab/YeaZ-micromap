@@ -1,7 +1,7 @@
 <h1>Domain adaptation for segmentation of microscopy images using YeaZ-micromap</h1>
 
 <h1>Overview</h1>
-YeaZ-micromap (YeaZ-microscopy mapper adapts the look of images from the target set so that they can be segmented using a neural network trained for the segmentation of images from the source set.
+YeaZ-micromap (YeaZ-microscopy mapper) adapts the look of images from the target set so that they can be segmented using a neural network trained for the segmentation of images from the source set.
 The tool consists of two modules: the style transfer module, which maps the look of images; and the YeaZ module, which segments the style-transferred images. As the style-transfer module, we used a generative adversarial network called CycleGAN. 
 
 <p>
@@ -26,12 +26,12 @@ Installation time is less than 10 minutes.
  1. Clone the repository (```git clone https://github.com/rahi-lab/YeaZ-micromap```) or download it directly from the GitHub webpage
  2. Create a virtual environment ```conda create -n YeaZ-micromap python=3.9```
  3. Activate the virtual environment ```conda activate YeaZ-micromap```
- 4. Install required packages ```pip install -r requirements.txt```
+ 4. Navigate to the folder where you cloned the YeaZ-micromap repository and install required packages ```pip install -r requirements.txt```
 
 
 <h1>Usage</h1>
 
-The code can be run from the command line and is split into two parts: 1. Training of the microscopy style-transfer using CycleGAN 2. Evaluation of the training by segmenting the mapped images using a pre-trained YeaZ network for segmentation. More specifically:
+The code can be run from the command line and is split into two parts: i) Training of the microscopy style-transfer using CycleGAN ii) Evaluation of the training by segmenting the mapped images using a pre-trained YeaZ network for segmentation. More specifically:
 
 1. *train_cyclegan.py* script performs:
 * style transfer training between the images in the trainA and trainB folders
@@ -80,20 +80,20 @@ Script arguments follow the established options nomenclature from the original c
 2. Launch training:
 ```
     $ python train_cyclegan.py \
-        --model cycle_gan \ #The generative model we use for transfer of the look of microscopy images
-        --dataroot GT_DATA_FOLDER \ #Directory that contains images used for training
-        --checkpoints_dir GENERAL_CYCLE_GAN_TRAINING_FOLDER (i.e. D:/GAN_grid_search) \ #Directory where the trained models are saved. By default,  models will be saved after every epoch
-        --name NAME_OF_SPECIFIC_CYCLEGAN_TRAINING (i.e. cyclegan_lambda_A_100_lambda_B_10_trial_2) \ #Name of the experiment (to be used during the prediction phase)
-        --preprocess crop \ #Preprocess images by cropping them to small patches, default = 256 px X 256 px
-        --grid_lambdas_A L1 L2 L3 .. (i.e. 1 10) \ #cycle_consistency_loss weights used for A->B->A mapping, default = 10
-        --grid_lambdas_B L1 L2 L3 .. (i.e. 1 10) #cycle_consistency_loss weights used for B->A->B mapping, default = 10
+        --model cycle_gan \#The generative model we use for transfer of the look of microscopy images
+        --dataroot GT_DATA_FOLDER \#Directory that contains images used for training
+        --checkpoints_dir GENERAL_CYCLE_GAN_TRAINING_FOLDER (i.e. D:/GAN_grid_search) \#Directory where the trained models are saved. By default,  models will be saved after every epoch
+        --name NAME_OF_SPECIFIC_CYCLEGAN_TRAINING \#Name of the experiment (to be used during the prediction phase) e.g. i.e. cyclegan_lambda_A_100_lambda_B_10_trial_2
+        --preprocess crop \#Preprocess images by cropping them to small patches with the default size of 256 px X 256 px
+        --grid_lambdas_A L1 L2 L3 ..  \#cycle_consistency_loss weights used for A->B->A mapping (e.g. 1 10), default = 10
+        --grid_lambdas_B L1 L2 L3 .. \#cycle_consistency_loss weights used for B->A->B mapping (e.g. 1 10), default = 10
 
     other options:
-        --gpu_ids GPU_ID # -1 for CPU; 0 for GPU0; 0,1 for GPU0 and GPU1, default = 0
-        --batch_size BATCH_SIZE #default = 1
-        --n_epochs N_EPOCHS #default = 200
-        --n_epochs_decay N_EPOCHS_DECAY #Number of epochs before learning rate linearly decays to 0, default = 200
-        --lr LR #Initial learning rate for adam, default = 0.0002
+        --gpu_ids GPU_ID \# -1 for CPU; 0 for GPU0; 0,1 for GPU0 and GPU1, default = 0
+        --batch_size BATCH_SIZE \#default = 1
+        --n_epochs N_EPOCHS \#default = 200
+        --n_epochs_decay N_EPOCHS_DECAY \#Number of epochs before learning rate linearly decays to 0, default = 200
+        --lr LR \#Initial learning rate for adam, default = 0.0002
 
 ```
 If multiple lambda values are specified, a grid search will be performed.</br>
@@ -104,26 +104,26 @@ If no lambda values are specified, default values (10, 10) will be used.
 
 ```
 $ python evaluate.py \
-    --dataroot GT_DATA_FOLDER \ #Directory that contains test images
-    --checkpoints_dir GENERAL_CYCLE_GAN_TRAINING_FOLDER \ #Checkpoints directory as specified during the CycleGAN training, e.g. D:/GAN_grid_search
-    --name NAME_OF_SPECIFIC_CYCLEGAN_TRAINING  \ #Experiment name as specified during the CycleGAN training, e.g. cyclegan_lambda_A_100_lambda_B_10_trial_1
-    --model cycle_gan \ 
+    --dataroot GT_DATA_FOLDER \#Directory that contains test images
+    --checkpoints_dir GENERAL_CYCLE_GAN_TRAINING_FOLDER \#Checkpoints directory as specified during the CycleGAN training, e.g. D:/GAN_grid_search
+    --name NAME_OF_SPECIFIC_CYCLEGAN_TRAINING  \#Experiment name as specified during the CycleGAN training, e.g. cyclegan_lambda_A_100_lambda_B_10_trial_1
+    --model cycle_gan \
     --preprocess none \
-    --path_to_yeaz_weights PATH_TO_YEAZ_WEIGHTS \ #Pretrained YeaZ weights, e.g. ./yeaz/unet/weights_budding_BF.pt
-    --threshold 0.5 \ #Threshold used during YeaZ prediction, default = 0.5
-    --min_seed_dist 3 \ #Minimal seed distance between two cells used during YeaZ prediction, default = 5
-    --min_epoch 1 \ #First CycleGAN epoch to take into consideration for evaluation
-    --max_epoch 201 \ #Last CycleGAN epoch to take into consideration for evaluation
-    --epoch_step 5 \ #Evaluate every n-th epoch of the CycleGAN training
-    --results_dir RESULTS_FOLDER (i.e. ) #Output folder where style-transferred and segmented images will be saved, e.g. D:/GAN_grid_search/results
-    --metrics_path METRICS_PATH (i.e. ) #Output folder where metrics (AP) will be saved, e.g. D:/GAN_grid_search/results/metrics.csv
+    --path_to_yeaz_weights PATH_TO_YEAZ_WEIGHTS \#Pretrained YeaZ weights, e.g. ./yeaz/unet/weights_budding_BF.pt
+    --threshold 0.5 \#Threshold used during YeaZ prediction, default = 0.5
+    --min_seed_dist 3 \#Minimal seed distance between two cells used during YeaZ prediction, default = 5
+    --min_epoch 1 \#First CycleGAN epoch to take into consideration for evaluation
+    --max_epoch 201 \#Last CycleGAN epoch to take into consideration for evaluation
+    --epoch_step 5 \#Evaluate every n-th epoch of the CycleGAN training
+    --results_dir RESULTS_FOLDER \#Output folder where style-transferred and segmented images will be saved, e.g. D:/GAN_grid_search/results
+    --metrics_path METRICS_PATH \#Output folder where metrics (AP) will be saved, e.g. D:/GAN_grid_search/results/metrics.csv
 
 other options:
-    --original_domain A or B #Source dataset to use test sets from, default = A
-    --skip_style_transfer #i.e. if style transfer has already been performed, skip
-    --skip_segmentation #i.e. if segmentation has already been performed, skip
-    --skip_metrics #i.e. if metrics have already been evaluated, skip
-    --metrics_patch_borders Y0 Y1 X0 X1 #e.g. 480 736 620 876
+    --original_domain A or B \#Source dataset to use test sets from, default = A
+    --skip_style_transfer \#i.e. if style transfer has already been performed, skip
+    --skip_segmentation \#i.e. if segmentation has already been performed, skip
+    --skip_metrics \#i.e. if metrics have already been evaluated, skip
+    --metrics_patch_borders Y0 Y1 X0 X1 \#e.g. 480 736 620 876
     --plot_metrics
 ```
 
