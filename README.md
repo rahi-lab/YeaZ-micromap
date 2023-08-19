@@ -43,13 +43,13 @@ Installation time is less than 10 minutes.
  1. Clone the repository (```git clone https://github.com/rahi-lab/YeaZ-micromap```) or download it directly from the GitHub webpage
  2. Create a virtual environment ```conda create -n YeaZ-micromap python=3.9```
  3. Activate the virtual environment ```conda activate YeaZ-micromap```
- 4. Install pytorch ```pip install torch==2.0.0+cu117 torchvision==0.15.1+cu117 --index-url https://download.pytorch.org/whl/cu117```
- 5. Navigate to the folder where you cloned the YeaZ-micromap repository and install required packages ```pip install -r requirements.txt```
+ 4. Install PyTorch ```pip install torch==2.0.0+cu117 torchvision==0.15.1+cu117 --index-url https://download.pytorch.org/whl/cu117```
+ 5. Navigate to the folder where you cloned the YeaZ-micromap repository and install the required packages ```pip install -r requirements.txt```
 
 
 # Usage
 
-The code can be run from the command line and is split into two parts: (i) Training of the microscopy style-transfer using CycleGAN (ii) Evaluation of the training by segmenting the mapped images using a pre-trained YeaZ network for segmentation. 
+The code can be run from the command line and is split into two parts: (i) Training of the microscopy style transfer using CycleGAN (ii) Evaluation of the training by segmenting the mapped images using a pre-trained YeaZ network for segmentation. 
 
 More specifically:
 
@@ -87,7 +87,7 @@ More specifically:
     * testA(_masks) and testB(_masks) can be empty during CycleGAN training
     * trainA and trainB can be empty during the evaluation step
 
-3. Additonally, the helper function, *preprocessing.py*, prepares the raw input data, of variable sizes and contents, for style transfer training.
+3. Additionally, the helper function, *preprocessing.py*, prepares the raw input data, of variable sizes and contents, for style transfer training.
 
 
 ## Train CycleGAN
@@ -136,7 +136,7 @@ Please replace placeholders with actual values and descriptions relevant to your
 
 | Argument                        | Description                                                                 | Default Value |
 |---------------------------------|-----------------------------------------------------------------------------|---------------|
-| `--dataroot GT_DATA_FOLDER`     | Directory containing training images.                                       | -             |
+| `--dataroot INPUT_DATA_FOLDER`     | Directory containing training images.                                       | -             |
 | `--checkpoints_dir GENERAL_CYCLE_GAN_TRAINING_FOLDER` | Directory to save trained models. Models are saved after each epoch by default. | -             |
 | `--name NAME_OF_SPECIFIC_CYCLEGAN_TRAINING`            | Experiment name for future reference.                                        | -             |
 | `--grid_lambdas_A L1 L2 ...`    | Cycle consistency loss weights for A->B->A mapping.                          | `10`          |
@@ -242,3 +242,4 @@ The expected output of the YeaZ-micromap is shown in the figure below.
 
 
 </p>
+Note that the output of the demo run on your computer might not be identical to the one shown here due to the stochastic training of the CycleGAN. In all of our runs, we observed that the AP initially rises and then later drops.
