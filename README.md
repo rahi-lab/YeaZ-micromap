@@ -242,4 +242,4 @@ The expected output of the YeaZ-micromap is shown in the figure below.
 
 
 </p>
-Note that the output of the demo run on your computer might not be identical to the one shown here due to the stochastic training of the CycleGAN. In all of our runs, we observed that the AP initially rises and then later drops.
+Note that the output of the demo run on your computer might not be identical to the one shown here due to the stochastic training of the CycleGAN.
