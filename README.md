@@ -153,7 +153,7 @@ If no lambda values are specified, default values (10, 10) will be used.
 | `--gpu_ids GPU_ID`      | `-1` for CPU, `0` for GPU0, `0 1` for GPU0 and GPU1. | `0`           |
 | `--batch_size BATCH_SIZE`| Batch size for training.                      | `1`           |
 | `--n_epochs N_EPOCHS`   | Number of training epochs.                     | `200`         |
-| `--n_epochs_decay N_EPOCHS_DECAY` | Epochs before linearly decaying the learning rate. | `200`         |
+| `--n_epochs_decay N_EPOCHS_DECAY` | Epochs before the learning rate linearly decays to zero | `200`         |
 | `--lr LR`               | Initial learning rate for Adam optimizer.      | `0.0002`      |
 
 ## Evaluate the mapping using pretrained YeaZ
@@ -224,12 +224,12 @@ Demo time (training + evaluation): ~2 h
 
 3. Style transfer training
     - Start visdom: ```$ python -m visdom.server```
-    - Run CycleGAN training: ```$ python train_cyclegan.py --dataroot ./data/input_data/ --name demo --checkpoints_dir ./data/checkpoints/ --gpu_ids 0 --n_epochs 100 --n_epochs_decay 0 --batch_size 1 --display_freq 1```
+    - Run CycleGAN training: ```$ python train_cyclegan.py --dataroot ./data/input_data/ --name demo --checkpoints_dir ./data/checkpoints/ --gpu_ids 0 --n_epochs 100 --n_epochs_decay 100 --batch_size 1 --display_freq 1```
     - Track the training progress via visdom at http://localhost:8097/
     - All weights will be stored at _./data/checkpoints_ 
 
 4. Evaluate domain adaptation
-    - Run evaluate script: ```$ python evaluate.py --dataroot ./data/input_data/ --checkpoints_dir ./data/checkpoints/ --name demo_lambda_A_10.0_lambda_B_10.0 --path_to_yeaz_weights ./data/input_data/YeaZ_weights/weights_budding_PhC_multilab_0_1 --max_epoch 100 --results_dir ./data/results/ --metrics_path ./data/results/metrics_lambda_A_10.0_lambda_B_10.0.csv --metrics_patch_borders 200 456 200 456 --plot_metrics --original_domain B ```
+    - Run evaluate script: ```$ python evaluate.py --dataroot ./data/input_data/ --checkpoints_dir ./data/checkpoints/ --name demo_lambda_A_10.0_lambda_B_10.0 --path_to_yeaz_weights ./data/input_data/YeaZ_weights/weights_budding_PhC_multilab_0_1 --max_epoch 200 --results_dir ./data/results/ --metrics_path ./data/results/metrics_lambda_A_10.0_lambda_B_10.0.csv --metrics_patch_borders 200 456 200 456 --plot_metrics --original_domain B ```
     - You can find the style transfer output at <i>./data/results/demo_lambda_A_10.0_lambda_B_10.0/test_[EPOCH]/images/fake_A/wt_FOV9_PhC_absent.nd2_channel_10p.png</i> by replacing the EPOCH placeholder
     - You can find the generated segmentation masks from the style-transferred images at <i>./data/results/demo_lambda_A_10.0_lambda_B_10.0/test_[EPOCH]/images/fake_A/wt_FOV9_PhC_absent.nd2_channel_10p_mask.h5</i> by replacing the EPOCH placeholder.</br>
     You can use YeaZ (download from https://github.com/rahi-lab/YeaZ-GUI) to visualize the masks.
