@@ -241,4 +241,4 @@ The expected output of the YeaZ-micromap is shown in the figure below.
 ![e4d8f0ad-01f6-42b7-b7d6-533dca1555cb](https://github.com/rahi-lab/YeaZ-micromap/assets/48595116/5fad61ed-0190-4d2d-8eca-f3a73b72068c)
 
 
-<\p>
+</p>
