@@ -1,0 +1,1 @@
+Download and place the input_data folder here (see Demo section in README.md), before starting the training and evaluation demo steps.

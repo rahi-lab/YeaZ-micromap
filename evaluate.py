@@ -14,7 +14,7 @@ Example:
         --preprocess none \
         --path_to_yeaz_weights PATH_TO_YEAZ_WEIGHTS (i.e. ./yeaz/unet/weights_budding_BF.pt) \
         --threshold 0.5 \
-        --min_seed_dist 3 \
+        --min_seed_dist 5 \
         --min_epoch 1 \
         --max_epoch 201 \
         --epoch_step 5 \

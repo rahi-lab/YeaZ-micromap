@@ -1,5 +1,5 @@
 """CycleGAN training script
-Adapted with minor adjustments (for lambda grid search) from: https://github.com/taesungp/contrastive-unpaired-translation
+Adapted with adjustments (for lambda grid search) from: https://github.com/taesungp/contrastive-unpaired-translation
 
 Usage:
     Start visdom server:
@@ -43,10 +43,7 @@ from util.visualizer import Visualizer
 
 use_visualizer = True
 
-
-
-if __name__ == '__main__':
-    opt = TrainOptions().parse()   # get training options
+def main(opt):
     name_prefix = opt.name
     lambdas_grid = [
         (lamA, lamB)
@@ -128,3 +125,8 @@ if __name__ == '__main__':
 
             print('End of epoch %d / %d \t Time Taken: %d sec' % (epoch, opt.n_epochs + opt.n_epochs_decay, time.time() - epoch_start_time))
             model.update_learning_rate()                     # update learning rates at the end of every epoch.
+
+if __name__ == '__main__':
+    # get training options
+    opt = TrainOptions().parse()
+    main(opt)
