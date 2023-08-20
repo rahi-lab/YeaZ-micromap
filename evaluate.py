@@ -41,6 +41,8 @@ import torch
 
 sys.path.append("./cycle_gan")
 
+from tqdm import tqdm
+
 from cycle_gan.data import create_dataset
 from cycle_gan.models import create_model
 from metrics.metrics import evaluate, plot_metrics, save_metrics
@@ -64,6 +66,9 @@ def initialzie_options() -> argparse.Namespace:
 
     # set correct device
     opt.device = torch.device('cuda:{}'.format(opt.gpu_ids[0])) if opt.gpu_ids else torch.device('cpu')
+
+    # set eval mode
+    opt.eval = True
 
     ### Style transfer options ###
     # test code only supports num_threads = 1
@@ -118,20 +123,15 @@ def style_transfer(
         webpage = html.HTML(web_dir, 'Experiment = %s, Phase = %s, Epoch = %s' % (
             opt.name, opt.phase, opt.epoch))
 
-        for i, data in enumerate(dataset):
-            if i == 0:
-                model.data_dependent_initialize(data)
-                model.setup(opt)
-                if opt.eval:
-                    model.eval()
-            if i >= opt.num_test:  # only apply our model to opt.num_test images.
-                break
+        # test with eval mode. This only affects layers like batchnorm and dropout.
+        model.setup(opt)
+        model.eval()
+
+        for data in tqdm(dataset):
             model.set_input(data)  # unpack data from data loader
             model.test()           # run inference
             visuals = model.get_current_visuals()  # get image results
             img_path = model.get_image_paths()     # get image paths
-            if i % 5 == 0:  # save images to an HTML file
-                print('processing (%04d)-th image... %s' % (i, img_path))
             save_images(webpage, visuals, img_path, width=opt.display_winsize)
         webpage.save()  # save the HTML
 
