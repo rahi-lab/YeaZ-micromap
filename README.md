@@ -16,9 +16,9 @@ Paper: *Pan-microscope image segmentation based on a single training set*
 
 <h2> Navigate to: </h2>
 
-* [Installation](https://github.com/stojk/yeaz-domain-adaptation#installation)
-* [Usage](https://github.com/stojk/yeaz-domain-adaptation#Usage)
-* [Demo](https://github.com/stojk/yeaz-domain-adaptation#Demo)
+* [Installation](https://github.com/rahi-lab/YeaZ-micromap/tree/main#installation)
+* [Usage](https://github.com/rahi-lab/YeaZ-micromap/tree/main#usage)
+* [Demo](https://github.com/rahi-lab/YeaZ-micromap/tree/main#demo)
 
 
 # Installation
