@@ -14,6 +14,12 @@ Paper: *Pan-microscope image segmentation based on a single training set*
 </p>
 
 
+<h2> Navigate to: </h2>
+
+* [Installation](https://github.com/stojk/yeaz-domain-adaptation#installation)
+* [Usage](https://github.com/stojk/yeaz-domain-adaptation#Usage)
+* [Demo](https://github.com/stojk/yeaz-domain-adaptation#Demo)
+
 
 # Installation
 ### System requirements
@@ -49,7 +55,7 @@ Installation time is less than 10 minutes.
 
 # Usage
 
-The code can be run from the command line and is split into two parts: (i) Training of the microscopy style transfer using CycleGAN (ii) Evaluation of the training by segmenting the mapped images using a pre-trained YeaZ network for segmentation. 
+The code can be run from the command line and is split into two parts: (i) Training of the microscopy style transfer using CycleGAN (ii) Evaluation of the training by segmenting the mapped images using a pre-trained YeaZ network for segmentation and translation of the style by using the weights from the best epoch.
 
 More specifically:
 
@@ -61,7 +67,11 @@ More specifically:
     *  segmentation on the style-transferred images using the pretrained YeaZ weights, 
     *  evaluation of segmentation quality based on the segmented images and GT masks
 
-    Both parts of the code rely on the following input data structure:
+3. *predict.py* script performs:
+    * style transfer on source dataset images in one of the specified folders (testA or testB) using the pretrained CycleGAN
+    * segmentation on the style-transferred images using the pretrained YeaZ weights
+
+    All three scripts rely on the following input data structure:
     ```
         input_data
         ├── trainA
@@ -87,7 +97,7 @@ More specifically:
     * testA(_masks) and testB(_masks) can be empty during CycleGAN training
     * trainA and trainB can be empty during the evaluation step
 
-3. Additionally, the helper function, *preprocessing.py*, prepares the raw input data, of variable sizes and contents, for style transfer training.
+4. Additionally, the helper function, *preprocessing.py*, prepares the raw input data, of variable sizes and contents, for style transfer training.
 
 
 ## Train CycleGAN
@@ -203,13 +213,49 @@ Please replace placeholders with actual values and descriptions relevant to your
 | `--metrics_patch_borders Y0 Y1 X0 X1` | Metrics patch borders, e.g., `480 736 620 876`.  | -             |
 | `--plot_metrics`                | Plot evaluation metrics.                            | -             |
 
+## Predict the masks with the selected style mapping and YeaZ
+
+To perform style mapping from selected epoch followed by segmentation, use the following command:
+
+```bash
+$ python predict.py \
+    --dataroot INPUT_DATA_FOLDER \
+    --checkpoints_dir GENERAL_CYCLE_GAN_TRAINING_FOLDER \
+    --name NAME_OF_SPECIFIC_CYCLEGAN_TRAINING \
+    --path_to_yeaz_weights PATH_TO_YEAZ_WEIGHTS \
+    --epoch EPOCH \
+    --results_dir RESULTS_FOLDER
+```
+
+### Main Options
+
+| Argument                       | Description                                           | Default Value |
+|--------------------------------|-------------------------------------------------------|---------------|
+| `--dataroot`                    | Directory containing unlabeled input images.         | -             |
+| `--checkpoints_dir`             | Directory with CycleGAN training checkpoints.        | -             |
+| `--name`                        | Experiment name from CycleGAN training.              | -             |
+| `--path_to_yeaz_weights`        | Path to pretrained YeaZ weights.                     | -             |
+| `--epoch`                       | Epoch to use for style transfer.                     | -             |
+| `--results_dir`                 | Output folder for style-transferred images and segmentation masks.                  | -             |
+
+### Other Options
+
+| Argument                       | Description                                           | Default Value |
+|--------------------------------|-------------------------------------------------------|---------------|
+| `--original_domain A or B`     | Source dataset to use for prediction.                | `A`           |
+| `--skip_style_transfer`         | (flag) Skip style transfer if already performed.            | -             |
+| `--skip_segmentation`           | (flag) Skip segmentation if already performed.              | -             |
+| `--threshold`                   | Threshold used during YeaZ prediction.               | `0.5`         |
+| `--min_seed_dist`               | Minimal seed distance between cells for prediction.  | `5`           |
+
 
 <h1>Demo</h1>
 
-#### The demo showcases YeaZ-micromap capabilities for style transfer of yeast microscopy images from the target to source domain, their segmentation in the source domain, and evaluation criteria (average precision, AP) for selecting the best style transfer epoch for the following segmentation task. Note that the demo is run on much smaller datasets, to allow testing on normal (desktop) PCs. For running on bigger datasets we recommend using scientific computing infrastructure (see more above in 'System requirements').
+#### The demo showcases YeaZ-micromap capabilities for style transfer of yeast microscopy, their segmentation in the source domain, and evaluation criteria (average precision, AP) for selecting the best style transfer epoch for the segmentation task. Note that the demo is run on much smaller datasets, to allow testing on normal (desktop) PCs. For running on bigger datasets we recommend using scientific computing infrastructure (see more in [Hadrware requirements](https://github.com/rahi-lab/YeaZ-micromap/tree/main#hardware-requirements)).
 
-Source domain, set A: PhaseContrast</br>
-Target domain, set B: BrightField
+Source domain, set A: Phase contrast</br>
+Target domain, set B: Brightfield
+YeaZ neural network was in this case trained only on the phase contrast images.
 
 Demo time (training + evaluation): ~2 h
 
@@ -237,11 +283,18 @@ Demo time (training + evaluation): ~2 h
     You can use YeaZ (download from https://github.com/rahi-lab/YeaZ-GUI) to visualize the masks.
     - Average precision (AP) metrics can be found in the <i>./data/results/</i> folder, files: <i>metrics_lambda_A_10.0_lambda_B_10.0.csv and metrics_lambda_A_10.0_lambda_B_10.0.png</i>
 
-The expected output of the YeaZ-micromap is shown in the figure below.
-<p align="center">
+    The expected output of the YeaZ-micromap is shown in the figure below.
+    <p align="center">
+
+    ![c3f299a2-dfb7-437d-96dd-9dba898954a4](https://github.com/rahi-lab/YeaZ-micromap/assets/48595116/4b7d588e-eb66-46d8-a85d-cd97457b0afd)
+
+    </p>
+    Note that the output of the demo run on your computer might not be identical to the one shown here due to the stochastic training of the CycleGAN.
     
-![e4d8f0ad-01f6-42b7-b7d6-533dca1555cb](https://github.com/rahi-lab/YeaZ-micromap/assets/48595116/5fad61ed-0190-4d2d-8eca-f3a73b72068c)
-
-
-</p>
-Note that the output of the demo run on your computer might not be identical to the one shown here due to the stochastic training of the CycleGAN.
+    
+5. Predict the style transfer and segmentation on all unlabeled BrightField data
+    - Select the epoch with the best average precision (AP) from the previous step. We will use the CycleGAN weights from this epoch for style tranfer of the whole unlabeled dataset. Replace the _EPOCH_ placeholder in the call bellow with the selected epoch.
+    - Run the predict script:```$ python predict.py --dataroot ./data/input_data_all/ --checkpoints_dir ./data/checkpoints/ --name demo_lambda_A_10.0_lambda_B_10.0 --path_to_yeaz_weights ./data/input_data/YeaZ_weights/weights_budding_PhC_multilab_0_1 --epoch EPOCH --results_dir ./data/results_predict/ --original_domain B ```
+    </br>If you get GPU memory overflow due to the images' size, add ```--gpu_ids -1``` argument to use the CPU. Beware, this will increase the execution time.
+    - Segmentation labels with the corresponding style-transfered images can be found at <i>./data/results_predict/images/fake_A</i>
+    - You can now use YeaZ GUI ([GitHub](https://github.com/rahi-lab/YeaZ-GUI), [Win app](https://drive.google.com/file/d/14484rtTHVNwWC0yLon4sqg_W3XrYzKcV/edit), [Mac app](https://drive.google.com/file/d/107uii-SMLW-JIb2WUscJCTT0PMQk-40Z/edit)) to adjust and validate the generated labels. 
