@@ -206,12 +206,14 @@ Please replace placeholders with actual values and descriptions relevant to your
 
 <h1>Demo</h1>
 
-#### The demo showcases YeaZ-micromap capabilities for style transfer of yeast microscopy images from the target to source domain, their segmentation in the source domain, and evaluation criteria (average precision, AP) for selecting the best style transfer epoch for the following segmentation task. Note that the demo is run on much smaller datasets, to allow testing on normal (desktop) PCs. For running on bigger datasets we recommend using scientific computing infrastructure (see more above in 'Systems requirements').
+#### The demo showcases YeaZ-micromap capabilities for style transfer of yeast microscopy images from the target to source domain, their segmentation in the source domain, and evaluation criteria (average precision, AP) for selecting the best style transfer epoch for the following segmentation task. Note that the demo is run on much smaller datasets, to allow testing on normal (desktop) PCs. For running on bigger datasets we recommend using scientific computing infrastructure (see more above in 'System requirements').
 
-Source domain: PhaseContrast</br>
-Target domain: BrightField
+Source domain, set A: PhaseContrast</br>
+Target domain, set B: BrightField
 
 Demo time (training + evaluation): ~2 h
+
+0. Install YeaZ-micromap (see installation instructions above)
 
 1. Data download
     - Download the data from the following link [Data](https://drive.google.com/drive/folders/1A-QI0IFacmlOfC52w1MzqtRtxnzGcBxc?usp=drive_link)
