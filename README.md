@@ -34,7 +34,7 @@ The code was written in Python 3.9 and tested on Windows 11 and RedHat Linux ser
 - **Storage**: 100 GB available space
 - **Graphics**: NVIDIA GeForce RTX 3060, 6GB VRAM
 
-#### Recommended Requirements (the ones we used for training on full datasets, specified in the manuscript):
+#### Recommended Requirements (the ones we used for training on full datasets specified in the manuscript):
 
 - **Processor**: 2 Xeon-Gold processors running at 2.1 GHz, with 20 cores each
 - **Memory (RAM)**: 192 GB of DDR4 RAM
