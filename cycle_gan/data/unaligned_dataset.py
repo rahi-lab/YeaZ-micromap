@@ -28,16 +28,25 @@ class UnalignedDataset(BaseDataset):
         BaseDataset.__init__(self, opt)
         self.dir_A = os.path.join(opt.dataroot, opt.phase + 'A')  # create a path '/path/to/data/trainA'
         self.dir_B = os.path.join(opt.dataroot, opt.phase + 'B')  # create a path '/path/to/data/trainB'
-
-        if opt.phase == "test" and not os.path.exists(self.dir_A) \
-           and os.path.exists(os.path.join(opt.dataroot, "valA")):
-            self.dir_A = os.path.join(opt.dataroot, "valA")
-            self.dir_B = os.path.join(opt.dataroot, "valB")
-
-        self.A_paths = sorted(make_dataset(self.dir_A, opt.max_dataset_size))   # load images from '/path/to/data/trainA'
-        self.B_paths = sorted(make_dataset(self.dir_B, opt.max_dataset_size))    # load images from '/path/to/data/trainB'
+        
+        if os.path.exists(self.dir_A):
+            self.A_paths = sorted(make_dataset(self.dir_A, opt.max_dataset_size))
+        else:
+            self.A_paths = []
+        
+        if os.path.exists(self.dir_B):
+            self.B_paths = sorted(make_dataset(self.dir_B, opt.max_dataset_size))
+        else:
+            self.B_paths = []
+        
         self.A_size = len(self.A_paths)  # get the size of dataset A
         self.B_size = len(self.B_paths)  # get the size of dataset B
+
+        if self.A_size == 0 and self.B_size == 0:
+            raise ValueError("A_size and B_size are both 0")
+
+        if opt.phase == "train" and any([self.A_size == 0, self.B_size == 0]):
+            raise ValueError("A_size or B_size is 0 during training")
 
     def __getitem__(self, index):
         """Return a data point and its metadata information.
@@ -51,24 +60,33 @@ class UnalignedDataset(BaseDataset):
             A_paths (str)    -- image paths
             B_paths (str)    -- image paths
         """
-        if self.opt.serial_batches:   # make sure index is within the range
-            index_A = index % self.A_size
-        else:   # randomize the index for domain B to avoid fixed pairs.
-            index_A = random.randint(0, self.A_size - 1)
-        A_path = self.A_paths[index_A]
-        A_img = Image.open(A_path)
 
-        if np.array(A_img).dtype.name == 'uint16': #dtype -> dtype.name
-            A_img = np.uint8(np.array(A_img) / 256)
-            A_img = Image.fromarray(A_img)
+        if self.A_size:
+            if self.opt.serial_batches:   # make sure index is within the range
+                index_A = index % self.A_size
+            else:   # randomize the index for domain B to avoid fixed pairs.
+                index_A = random.randint(0, self.A_size - 1)
+            A_path = self.A_paths[index_A]
+            A_img = Image.open(A_path)
+            if np.array(A_img).dtype.name == 'uint16': #dtype -> dtype.name
+                A_img = np.uint8(np.array(A_img) / 256)
+                A_img = Image.fromarray(A_img)
+        else:
+            A_img = Image.new('RGB', (self.opt.load_size, self.opt.load_size), (0, 0, 0))
+            A_path = 'placeholder.png'
 
-        index_B = index
-        B_path = self.B_paths[index_B % self.B_size]  # make sure index is within the range
-        B_img = Image.open(B_path)
+        if self.B_size:
+            index_B = index
+            B_path = self.B_paths[index_B % self.B_size]  # make sure index is within the range
+            B_img = Image.open(B_path)
+            if np.array(B_img).dtype.name == 'uint16': #dtype -> dtype.name
+                B_img = np.uint8(np.array(B_img) / 256)
+                B_img = Image.fromarray(B_img)
+        else:
+            B_img = Image.new('RGB', (self.opt.load_size, self.opt.load_size), (0, 0, 0))
+            B_path = 'placeholder.png'
 
-        if np.array(B_img).dtype.name == 'uint16': #dtype -> dtype.name
-            B_img = np.uint8(np.array(B_img) / 256)
-            B_img = Image.fromarray(B_img)
+        
 
         # Apply image transformation
         # For FastCUT mode, if in finetuning phase (learning rate is decaying),
