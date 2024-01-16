@@ -103,12 +103,32 @@ def style_transfer(
     # test with eval mode. This only affects layers like batchnorm and dropout.
     model.setup(opt)
     model.eval()
-
+    pad_size = 300
     print('Style transfer:')
     for data in tqdm(dataset):
+        # pad each image from the original_domain with pad_size pixels on each side
+        # this is to avoid artifacts at the edges of the image
+        images = data[opt.original_domain].numpy()
+        padded_images = [
+            np.stack([
+                np.pad(channel, ((pad_size, pad_size), (pad_size, pad_size)), mode='constant', constant_values=channel.mean())
+                for channel in image
+            ])
+            for image in images
+        ]
+        data[opt.original_domain] = torch.tensor(padded_images)
+
+        # perform style transfer
         model.set_input(data)  # unpack data from data loader
         model.test()           # run inference
         visuals = model.get_current_visuals()  # get image results
+
+        # crop images to original size in the 'fake_{target_domain}' domain
+        target_domain = 'B' if opt.original_domain == 'A' else 'A'
+        visuals[f'fake_{target_domain}'] = torch.stack([
+            image[:, pad_size:-pad_size, pad_size:-pad_size] for image in visuals[f'fake_{target_domain}']
+        ])
+
         img_path = model.get_image_paths()     # get image paths
         save_images(webpage, visuals, img_path, width=opt.display_winsize)
     webpage.save()  # save the HTML
