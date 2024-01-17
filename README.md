@@ -213,6 +213,8 @@ Please replace placeholders with actual values and descriptions relevant to your
 | `--metrics_patch_borders Y0 Y1 X0 X1` | Metrics patch borders, e.g., `480 736 620 876`.  | -             |
 | `--plot_metrics`                | (flag) Plot evaluation metrics.                            | -             |
 
+Make sure that the test set and test set masks are following the input_data structure given [above]([url](https://github.com/rahi-lab/YeaZ-micromap/tree/main?tab=readme-ov-file#usage)). 
+
 ## Predict the masks with the selected style mapping and YeaZ
 
 To perform style mapping from selected epoch followed by segmentation, use the following command:
