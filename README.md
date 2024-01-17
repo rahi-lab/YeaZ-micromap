@@ -126,7 +126,7 @@ Please replace placeholders with actual values and descriptions relevant to your
 ```bash
 $ python -m visdom.server
 ```
-<p> Visdom is a visualization tool that communicates with the CycleGAN code during training and saves one example of mapping per epoch. This is useful for quickly checking whether the mapping qualitatively  makes sense. Saved data can be later accessed using an HTML interface, in Checkpoint/Experiment_Name/web/index.html</p>
+<p> Visdom is a visualization tool that communicates with the CycleGAN code during training and saves one example of mapping per epoch. This is useful for quickly checking whether the mapping qualitatively  makes sense. Saved data can be later accessed using an HTML interface, in Checkpoint/Experiment_Name/web/index.html. When running on server, this can be skipped.</p>
 
 ### 3. Launch training
 
