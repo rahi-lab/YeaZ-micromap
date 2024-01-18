@@ -182,7 +182,7 @@ $ python evaluate.py \
     --max_epoch MAX_EPOCH \
     --epoch_step EPOCH_STEP \
     --results_dir RESULTS_FOLDER \
-    --metrics_path METRICS_PATH
+    --metrics_path PATH_TO_METRICS_CSV_FILE
 ```
 Please replace placeholders with actual values and descriptions relevant to your script.
 
